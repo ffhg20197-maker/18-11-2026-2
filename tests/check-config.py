@@ -6,7 +6,7 @@ ht = (ROOT / "wordpress/.htaccess").read_text(encoding="utf-8")
 robots = (ROOT / "wordpress/robots.txt").read_text(encoding="utf-8")
 compose = (ROOT / "docker-compose.yml").read_text(encoding="utf-8")
 checks = {
-    "Apache 2.4 blocks wp-config.php": bool(re.search(r'<FilesMatch[^>]*>\\s*Require all denied\\s*</FilesMatch>', ht, re.S) and "wp-config" in ht),
+    "Apache 2.4 blocks wp-config.php": bool(re.search(r'<FilesMatch[^>]*>\s*Require all denied\s*</FilesMatch>', ht, re.S) and "wp-config" in ht),
     "WordPress front controller rewrite exists": "RewriteRule . /index.php [L]" in ht,
     "real files and directories are excluded from rewrite": "!-f" in ht and "!-d" in ht,
     "robots blocks wp-admin": "Disallow: /wp-admin/" in robots,
@@ -19,5 +19,5 @@ checks = {
 failed = [name for name, ok in checks.items() if not ok]
 for name, ok in checks.items():
     print(f"[{'PASS' if ok else 'FAIL'}] {name}")
-print(f"\\nResult: {len(checks)-len(failed)}/{len(checks)} checks passed")
+print(f"\nResult: {len(checks)-len(failed)}/{len(checks)} checks passed")
 sys.exit(1 if failed else 0)
